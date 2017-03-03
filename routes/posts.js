@@ -4,7 +4,7 @@ var router = express.Router();
 var checkLogin = require('../middlewares/check').checkLogin;
 
 router.get('/', (req, res, next)=>{
-	res.send(req.flash())
+	res.render('posts')
 });
 
 router.post('/create', checkLogin, (req, res, next)=>{

@@ -19,6 +19,7 @@ var flash = require('connect-flash');
 var config = require('config-lite');
 var routes = require('./routes');
 var pkg = require('./package');	//package.json
+var formidable = require('express-formidable');
 
 var app = express();
 const port = config.port;
@@ -46,6 +47,11 @@ app.use(session({
 }));
 
 app.use(flash());
+
+app.use(formidable({
+	uploadDir:path.join(__dirname, 'public/img'),
+	keepExtensions:true
+}))
 
 app.locals.blog={
 	title:pkg.name,
