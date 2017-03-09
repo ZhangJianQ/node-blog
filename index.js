@@ -17,9 +17,11 @@ var session = require('express-session');
 var mongostore = require('connect-mongo')(session);
 var flash = require('connect-flash');
 var config = require('config-lite');
-var routes = require('./routes');
+var routes = require('./routes');	//routes/index.js
 var pkg = require('./package');	//package.json
 var formidable = require('express-formidable');
+var winston = require('winston');
+var expressWinston = require('express-winston');
 
 var app = express();
 const port = config.port;
@@ -65,7 +67,27 @@ app.use(function(req, res, next){
 	next()
 })
 
-routes(app)
+app.use(expressWinston.logger({
+	transports:[
+	new (winston.transports.Console)({
+		json:true,
+		colorize:true
+	}), new winston.transports.File({
+		filename:'logs/success.log'
+	})]
+}))
+
+routes(app);
+
+app.use(expressWinston.errorLogger({
+	transports:[
+	new winston.transports.Console({
+		json:true,
+		colorize:true
+	}),new winston.transports.File({
+		filename:'logs/error.log'
+	})]
+}))
 
 app.listen(config.port, function(){
 	console.log('listening on port ${port}')
